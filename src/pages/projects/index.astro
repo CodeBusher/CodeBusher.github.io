@@ -1,0 +1,58 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import { site } from '@/site.config';
+import { getPublishedProjects } from '@/lib/projects';
+
+const projects = await getPublishedProjects();
+---
+
+<BaseLayout title="Projects" description={`Projects · ${site.title}`}>
+  <h1 class="page-title">Projects</h1>
+  <p class="lede sans">
+    Cards link to a detail page when the Markdown body is non-empty; otherwise they open the repository URL.
+  </p>
+  {
+    projects.length > 0 ? (
+      <div class="project-grid">
+        {projects.map((project, index) => (
+          <ProjectCard project={project} index={index} />
+        ))}
+      </div>
+    ) : (
+      <p class="empty sans">Add a file under <code>src/content/projects/</code> to list a project.</p>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .page-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.65rem, 3vw, 2rem);
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+  }
+
+  .lede {
+    margin: 0 0 1.75rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .project-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 560px) {
+    .project-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .empty {
+    color: var(--muted);
+    font-style: italic;
+  }
+</style>

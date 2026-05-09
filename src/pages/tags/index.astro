@@ -1,0 +1,50 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { site } from '@/site.config';
+import { getPublishedNotes } from '@/lib/notes';
+import { tagUrl, tagsFromNotes } from '@/lib/tags';
+
+const notes = await getPublishedNotes();
+const tags = tagsFromNotes(notes);
+---
+
+<BaseLayout title="Tags" description={`All tags · ${site.title}`}>
+  <h1 class="page-title">Tags</h1>
+  {
+    tags.length > 0 ? (
+      <ul class="tags">
+        {tags.map((tag) => (
+          <li>
+            <a href={tagUrl(tag)}>{tag}</a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="empty sans">No tags on published notes yet.</p>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .page-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.65rem, 3vw, 2rem);
+    font-weight: 600;
+    margin: 0 0 1.25rem;
+  }
+
+  .tags {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    font-size: 1rem;
+  }
+
+  .empty {
+    color: var(--muted);
+    font-style: italic;
+  }
+</style>

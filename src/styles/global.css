@@ -1,0 +1,94 @@
+:root {
+  --ink: #1a1a1a;
+  --muted: #5c5c5c;
+  --rule: #d4d0c8;
+  --accent: #2c5282;
+  --accent-soft: #ebf2fa;
+  --bg: #faf9f7;
+  --dot: #c4a574;
+  --font-serif: "Spectral", Georgia, "Times New Roman", serif;
+  --font-sans: "Lato", system-ui, sans-serif;
+  --accent-card-0: #2c5282;
+  --accent-card-1: #276749;
+  --accent-card-2: #744210;
+  --accent-card-3: #702459;
+  --accent-card-4: #822727;
+  --accent-card-5: #234e70;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+.sans {
+  font-family: var(--font-sans);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.wrap {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+/* Prose for Markdown / MDX */
+.prose {
+  max-width: 100%;
+}
+
+.prose h2 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin: 2rem 0 0.75rem;
+}
+
+.prose h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.prose p {
+  margin: 0 0 1rem;
+}
+
+.prose ul,
+.prose ol {
+  margin: 0 0 1rem;
+  padding-left: 1.35rem;
+}
+
+.prose pre {
+  overflow-x: auto;
+  padding: 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.prose code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.9em;
+}

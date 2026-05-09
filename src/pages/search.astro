@@ -1,0 +1,52 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { site } from '@/site.config';
+
+const enablePagefind = import.meta.env.PROD;
+---
+
+<BaseLayout title="Search" description={`Search · ${site.title}`}>
+  <h1 class="page-title">Search</h1>
+  {
+    enablePagefind ? (
+      <>
+        <p class="lede sans">Type to search the built site index (Pagefind).</p>
+        <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+        <div id="pagefind-ui" class="ui" />
+        <script is:inline type="module">
+          const { PagefindUI } = await import('/pagefind/pagefind-ui.js');
+          new PagefindUI({
+            element: '#pagefind-ui',
+            showSubResults: true,
+            showImages: false,
+          });
+        </script>
+      </>
+    ) : (
+      <p class="lede sans">
+        Pagefind runs on the production bundle. Use the <a href="/notes/">notes index</a> while developing, or run
+        <code>npm run build</code> then <code>npm run preview</code> to try search locally.
+      </p>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .page-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.65rem, 3vw, 2rem);
+    font-weight: 600;
+    margin: 0 0 0.75rem;
+  }
+
+  .lede {
+    margin: 0 0 1.5rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  .ui {
+    min-height: 4rem;
+  }
+</style>

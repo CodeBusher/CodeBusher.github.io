@@ -1,0 +1,55 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import NoteList from '@/components/NoteList.astro';
+import { site } from '@/site.config';
+import { formatTopicPathDisplay, topicListingPath, topicNavPrefixes } from '@/lib/note-taxonomy';
+import { getPublishedNotes, sortNotesByDateDesc } from '@/lib/notes';
+
+const notes = sortNotesByDateDesc(await getPublishedNotes());
+const topics = topicNavPrefixes(notes);
+---
+
+<BaseLayout title="Notes" description={`All notes · ${site.title}`}>
+  <h1 class="page-title">Notes</h1>
+  <ul class="topic-nav sans">
+    <li><a href="/notes/" aria-current="page">All</a></li>
+    {topics.map((t) => <li><a href={topicListingPath(t)}>{formatTopicPathDisplay(t)}</a></li>)}
+  </ul>
+  {notes.length > 0 ? <NoteList notes={notes} /> : <p class="empty sans">No published notes yet.</p>}
+</BaseLayout>
+
+<style>
+  .page-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.65rem, 3vw, 2rem);
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+  }
+
+  .topic-nav {
+    list-style: none;
+    margin: 0 0 1.75rem;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .topic-nav a {
+    color: var(--muted);
+  }
+
+  .topic-nav a:hover,
+  .topic-nav a[aria-current='page'] {
+    color: var(--ink);
+  }
+
+  .empty {
+    color: var(--muted);
+    font-style: italic;
+  }
+</style>

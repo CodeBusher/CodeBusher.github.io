@@ -1,0 +1,67 @@
+---
+import { site } from '@/site.config';
+
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+
+<header class="site sans">
+  <a class="logo" href="/">{site.title}</a>
+  <nav aria-label="Primary">
+    {
+      site.nav.map((item) => {
+        const hrefPath = item.href.replace(/\/$/, '') || '/';
+        const active =
+          hrefPath === '/'
+            ? pathname === '/'
+            : pathname === hrefPath || pathname.startsWith(`${hrefPath}/`);
+        return (
+          <a href={item.href} class:list={{ active }} aria-current={active ? 'page' : undefined}>
+            {item.label}
+          </a>
+        );
+      })
+    }
+  </nav>
+</header>
+
+<style>
+  .site {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 2rem;
+  }
+
+  .logo {
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+  }
+
+  nav {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  nav a {
+    color: var(--muted);
+    margin-left: 1rem;
+  }
+
+  nav a:first-of-type {
+    margin-left: 0;
+  }
+
+  nav a:hover,
+  nav a.active {
+    color: var(--ink);
+  }
+</style>

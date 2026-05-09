@@ -1,0 +1,71 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import NoteList from '@/components/NoteList.astro';
+import { site } from '@/site.config';
+import { getPublishedNotes, sortNotesByDateDesc } from '@/lib/notes';
+import { notesByTag, tagsFromNotes } from '@/lib/tags';
+
+export async function getStaticPaths() {
+  const notes = await getPublishedNotes();
+  const tags = tagsFromNotes(notes);
+  return tags.map((tag) => ({ params: { tag } }));
+}
+
+const raw = Astro.params.tag ?? '';
+const tag = decodeURIComponent(raw);
+const all = sortNotesByDateDesc(await getPublishedNotes());
+const tags = tagsFromNotes(all);
+const notes = notesByTag(all, tag);
+---
+
+<BaseLayout title={`Tag · ${tag}`} description={`Notes tagged ${tag} · ${site.title}`}>
+  <h1 class="page-title">Tag · {tag}</h1>
+  <ul class="tag-nav sans">
+    <li><a href="/tags/">All tags</a></li>
+    {
+      tags
+        .filter((t) => t !== tag)
+        .map((t) => (
+          <li>
+            <a href={`/tags/${encodeURIComponent(t)}/`}>{t}</a>
+          </li>
+        ))
+    }
+  </ul>
+  {notes.length > 0 ? <NoteList notes={notes} /> : <p class="empty sans">No notes with this tag.</p>}
+</BaseLayout>
+
+<style>
+  .page-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.65rem, 3vw, 2rem);
+    font-weight: 600;
+    margin: 0 0 1rem;
+  }
+
+  .tag-nav {
+    list-style: none;
+    margin: 0 0 1.75rem;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .tag-nav a {
+    color: var(--muted);
+  }
+
+  .tag-nav a:hover {
+    color: var(--ink);
+  }
+
+  .empty {
+    color: var(--muted);
+    font-style: italic;
+  }
+</style>

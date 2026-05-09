@@ -1,0 +1,65 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SectionRule from '@/components/SectionRule.astro';
+import NoteList from '@/components/NoteList.astro';
+import { site } from '@/site.config';
+import { getPublishedNotes, sortNotesByDateDesc } from '@/lib/notes';
+
+const notes = sortNotesByDateDesc(await getPublishedNotes());
+const recent = notes.slice(0, 8);
+const [introFirst, , introLast] = site.intro;
+---
+
+<BaseLayout description={site.description}>
+  <section aria-labelledby="intro-heading">
+    <h2 id="intro-heading" class="section-title sans">About me</h2>
+    <p>{introFirst}</p>
+    <p>
+      Currently, under the supervision of Prof. Yoon, I'm leading{' '}
+      <a href="/projects/voice/">V.O.I.C.E.</a>, an AI-powered virtual patient simulation
+      platform for speech-language pathology (SLP) education.
+    </p>
+    <p>{introLast}</p>
+  </section>
+
+  <SectionRule />
+
+  <section aria-labelledby="recent-heading">
+    <h2 id="recent-heading" class="section-title sans">Recent notes</h2>
+    {recent.length > 0 ? (
+      <NoteList notes={recent} />
+    ) : (
+      <p class="muted">No notes yet.</p>
+    )}
+    {recent.length > 0 && (
+      <p class="more sans">
+        <a href="/notes/">All notes →</a>
+      </p>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.75rem;
+  }
+
+  section[aria-labelledby="intro-heading"] p {
+    margin: 0 0 1rem;
+  }
+
+  .muted {
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .more {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+</style>

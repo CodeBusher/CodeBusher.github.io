@@ -1,0 +1,94 @@
+---
+import { formatNoteDate } from '@/lib/format';
+import { noteUrl, noteTopicListingUrl, topicOf, type NoteEntry } from '@/lib/notes';
+
+interface Props {
+  notes: NoteEntry[];
+}
+
+const { notes } = Astro.props;
+---
+
+<ul class="notes">
+  {
+    notes.map((note) => (
+      <li>
+        <p class="note-meta sans">
+          <time datetime={formatNoteDate(note.data.pubDate)}>{formatNoteDate(note.data.pubDate)}</time>
+          <a class="topic" href={noteTopicListingUrl(note)}>
+            {topicOf(note)}
+          </a>
+        </p>
+        <h2>
+          <a href={noteUrl(note)}>{note.data.title}</a>
+        </h2>
+        {note.data.description && <p class="note-desc">{note.data.description}</p>}
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .notes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .notes li {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .notes li:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .note-meta {
+    font-size: 0.8125rem;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+  }
+
+  .note-meta time::after {
+    content: " · ";
+  }
+
+  .topic {
+    text-transform: lowercase;
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .topic:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+
+  .notes h2 {
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0 0 0.35rem;
+    line-height: 1.3;
+  }
+
+  .notes h2 a {
+    color: var(--ink);
+  }
+
+  .notes h2 a:hover {
+    color: var(--accent);
+  }
+
+  .note-desc {
+    margin: 0;
+    font-size: 0.98rem;
+    color: var(--muted);
+  }
+</style>

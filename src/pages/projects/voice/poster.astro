@@ -1,0 +1,77 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const pdfUrl = '/projects/voice/voice-poster.pdf';
+const projectUrl = '/projects/voice/';
+---
+
+<BaseLayout title="V.O.I.C.E. — Poster" description="Poster for the V.O.I.C.E. virtual-patient simulation platform.">
+  <p class="back sans">
+    <a href={projectUrl}>← Back to V.O.I.C.E.</a>
+  </p>
+
+  <header class="post-header">
+    <h1>Poster</h1>
+    <p class="byline sans">
+      <span>V.O.I.C.E. — virtual-patient simulation platform for SLP education</span>
+      <span> · </span>
+      <a href={pdfUrl} download>Download PDF</a>
+    </p>
+  </header>
+
+  <div class="pdf-frame">
+    <iframe
+      src={pdfUrl}
+      title="V.O.I.C.E. poster (PDF)"
+      loading="lazy"
+    ></iframe>
+  </div>
+
+  <noscript>
+    <p class="fallback sans">
+      <a href={pdfUrl}>Open the poster PDF</a> if it doesn't render above.
+    </p>
+  </noscript>
+</BaseLayout>
+
+<style>
+  .back {
+    margin: 0 0 1.25rem;
+    font-size: 0.85rem;
+  }
+
+  .post-header h1 {
+    font-size: clamp(1.65rem, 3.5vw, 2rem);
+    font-weight: 600;
+    line-height: 1.25;
+    margin: 0 0 0.5rem;
+  }
+
+  .byline {
+    font-size: 0.8125rem;
+    color: var(--muted);
+    margin: 0 0 1.5rem;
+  }
+
+  .pdf-frame {
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    background: var(--accent-soft);
+    overflow: hidden;
+  }
+
+  .pdf-frame iframe {
+    display: block;
+    width: 100%;
+    height: 80vh;
+    min-height: 480px;
+    border: 0;
+    background: #fff;
+  }
+
+  .fallback {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+</style>

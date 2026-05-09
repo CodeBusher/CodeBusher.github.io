@@ -1,0 +1,36 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor / IDE
+*.swp
+*.swo
+*~
+.idea/
+
+# Local scratch (not part of published blog)
+.local/
+
+# Claude
+.claude/
+
+# Secrets and local env (if you add tooling later)
+.env
+.env.*.local
+
+# Astro
+.astro/
+
+# Common build / dependency dirs (static site generators, etc.)
+node_modules/
+dist/
+build/
+.cache/
+.parcel-cache/
+
+# Python (if you add scripts later)
+__pycache__/
+*.py[cod]
+.venv/
+venv/

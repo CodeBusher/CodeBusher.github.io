@@ -1,0 +1,124 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import NoteList from '@/components/NoteList.astro';
+import { site } from '@/site.config';
+import {
+  decodeTopicPathParam,
+  formatTopicPathDisplay,
+  isNoteUnderTopicPath,
+  parseNoteId,
+  topicBreadcrumbs,
+  topicListingPath,
+  topicNavPrefixes,
+} from '@/lib/note-taxonomy';
+import { getPublishedNotes, sortNotesByDateDesc } from '@/lib/notes';
+
+export async function getStaticPaths() {
+  const notes = await getPublishedNotes();
+  return topicNavPrefixes(notes).map((topicPath) => ({
+    params: { topic: topicPath },
+  }));
+}
+
+const filterPath = decodeTopicPathParam(Astro.params.topic);
+const all = sortNotesByDateDesc(await getPublishedNotes());
+const prefixes = topicNavPrefixes(all);
+const notes = all.filter((n) => isNoteUnderTopicPath(parseNoteId(n.id).topicPath, filterPath));
+const crumbs = topicBreadcrumbs(filterPath);
+const titleDisplay = formatTopicPathDisplay(filterPath);
+---
+
+<BaseLayout title={`Notes · ${titleDisplay}`} description={`Topic ${titleDisplay} · ${site.title}`}>
+  <nav class="crumbs sans" aria-label="Breadcrumb">
+    {
+      crumbs.map((c, i) => (
+        <>
+          {i > 0 && <span class="sep"> / </span>}
+          <a href={c.href} aria-current={i === crumbs.length - 1 ? 'page' : undefined}>
+            {c.label}
+          </a>
+        </>
+      ))
+    }
+  </nav>
+  <h1 class="page-title">{titleDisplay}</h1>
+  <p class="lede sans">Notes under this topic (including sub-topics).</p>
+  <ul class="topic-nav sans">
+    <li><a href="/notes/">All</a></li>
+    {
+      prefixes.map((t) => (
+        <li>
+          <a href={topicListingPath(t)} class:list={{ active: t === filterPath }} aria-current={t === filterPath ? 'page' : undefined}>
+            {formatTopicPathDisplay(t)}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  {notes.length > 0 ? <NoteList notes={notes} /> : <p class="empty sans">No notes in this topic.</p>}
+</BaseLayout>
+
+<style>
+  .crumbs {
+    font-size: 0.8125rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .crumbs a {
+    color: var(--muted);
+  }
+
+  .crumbs a:hover,
+  .crumbs a[aria-current='page'] {
+    color: var(--ink);
+  }
+
+  .sep {
+    color: var(--rule);
+  }
+
+  .page-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.65rem, 3vw, 2rem);
+    font-weight: 600;
+    margin: 0 0 1rem;
+    text-transform: lowercase;
+    font-variant: small-caps;
+    letter-spacing: 0.03em;
+  }
+
+  .lede {
+    margin: 0 0 1rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .topic-nav {
+    list-style: none;
+    margin: 0 0 1.75rem;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .topic-nav a {
+    color: var(--muted);
+  }
+
+  .topic-nav a:hover,
+  .topic-nav a.active,
+  .topic-nav a[aria-current='page'] {
+    color: var(--ink);
+  }
+
+  .empty {
+    color: var(--muted);
+    font-style: italic;
+  }
+</style>

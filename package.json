@@ -1,0 +1,26 @@
+{
+  "name": "blog",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && pagefind --site dist --output-path dist/pagefind",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.3.12",
+    "@astrojs/rss": "^4.0.14",
+    "@astrojs/sitemap": "^3.6.0",
+    "astro": "^5.15.0",
+    "astro-expressive-code": "^0.41.3",
+    "katex": "^0.16.25",
+    "pagefind": "^1.4.0",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  }
+}

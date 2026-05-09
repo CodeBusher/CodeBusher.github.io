@@ -1,0 +1,89 @@
+---
+import { projectCardHref, projectHasDetailPage, type ProjectEntry } from '@/lib/projects';
+
+interface Props {
+  project: ProjectEntry;
+  index: number;
+}
+
+const { project, index } = Astro.props;
+const accentVar = `--accent-card-${index % 6}`;
+const href = projectCardHref(project);
+const external = !projectHasDetailPage(project);
+---
+
+<article class="card sans" style={`--card-accent: var(${accentVar});`}>
+  <h2 class="card-title">
+    <a href={href} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+      {project.data.title}
+      <span class="arrow" aria-hidden="true"> →</span>
+    </a>
+  </h2>
+  <p class="card-desc">{project.data.description}</p>
+  {
+    project.data.tech.length > 0 && (
+      <ul class="tech">
+        {project.data.tech.map((t) => (
+          <li>{t}</li>
+        ))}
+      </ul>
+    )
+  }
+</article>
+
+<style>
+  .card {
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    background: #fff;
+    border-left: 3px solid var(--card-accent, var(--accent));
+  }
+
+  .card-title {
+    margin: 0 0 0.35rem;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .card-title a {
+    color: var(--ink);
+  }
+
+  .card-title a:hover {
+    color: var(--accent);
+  }
+
+  .arrow {
+    color: var(--card-accent, var(--accent));
+    font-weight: 400;
+  }
+
+  .card-desc {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+
+  .tech {
+    list-style: none;
+    margin: 0.65rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .tech li {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 0.15rem 0.4rem;
+    border-radius: 2px;
+  }
+</style>

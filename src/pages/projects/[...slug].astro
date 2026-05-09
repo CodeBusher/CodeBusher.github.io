@@ -1,0 +1,70 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getEntry, render } from 'astro:content';
+import { formatNoteDate } from '@/lib/format';
+import { getPublishedProjects, projectHasDetailPage, projectSlugFromId } from '@/lib/projects';
+
+export async function getStaticPaths() {
+  const projects = await getPublishedProjects();
+  return projects
+    .filter(projectHasDetailPage)
+    .map((p) => ({
+      params: { slug: projectSlugFromId(p.id) },
+      props: { id: p.id },
+    }));
+}
+
+const { id } = Astro.props;
+const entry = await getEntry('projects', id);
+
+if (!entry || !projectHasDetailPage(entry)) {
+  return Astro.redirect('/404/');
+}
+
+const expectedSlug = projectSlugFromId(entry.id);
+const paramSlugRaw = Astro.params.slug;
+const paramSlug = Array.isArray(paramSlugRaw) ? paramSlugRaw.join('/') : (paramSlugRaw ?? '');
+
+if (paramSlug !== expectedSlug) {
+  return Astro.redirect('/404/');
+}
+
+const { Content } = await render(entry);
+---
+
+<BaseLayout title={entry.data.title} description={entry.data.description}>
+  <article class="prose">
+    <header class="post-header">
+      <h1>{entry.data.title}</h1>
+      <p class="byline sans">
+        <time datetime={formatNoteDate(entry.data.pubDate)}>{formatNoteDate(entry.data.pubDate)}</time>
+        <span> · </span>
+        <a href={entry.data.repo} target="_blank" rel="noopener noreferrer">Repository</a>
+        {entry.data.demo && (
+          <>
+            <span> · </span>
+            <a href={entry.data.demo} target="_blank" rel="noopener noreferrer">
+              Demo
+            </a>
+          </>
+        )}
+      </p>
+    </header>
+    <Content />
+  </article>
+</BaseLayout>
+
+<style>
+  .post-header h1 {
+    font-size: clamp(1.65rem, 3.5vw, 2rem);
+    font-weight: 600;
+    line-height: 1.25;
+    margin: 0 0 0.5rem;
+  }
+
+  .byline {
+    font-size: 0.8125rem;
+    color: var(--muted);
+    margin: 0 0 2rem;
+  }
+</style>
